@@ -20,11 +20,13 @@ $$
  &= \argmin_{\theta} \left( \ln{p(x)} - \mathbb{E}_{z \sim \hat{p}_\theta(z)} \left[ \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} \right] \right)
 \end{align*}
 $$
+
 ここで、最右辺第一項$`\ln{p(x)}`$が$`\theta`$に依存せず無視できるため、KLダイバージェンスの最小化は第二項の最大化と等価であると言える。
 
 $$
 \theta^{\text{LVM}} = \argmax_{\theta} \mathbb{E}_{z \sim \hat{p}_\theta(z)} \left[ \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} \right]
 $$
+
 この項を変分下限（Evidence Lower Bound, ELBO）と呼ぶ。
 「変分下限」という名称は、KLダイバージェンスが常に正の値をとることにより成立する不等式：
 
@@ -33,6 +35,7 @@ $$
 \ln{p(x)} \geq \mathbb{E}_{z \sim \hat{p}_\theta(z)} \left[ \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} \right]
 \end{align*}
 $$
+
 に由来する。
 
 ## Example 1. ディリクレ-多項分布モデル
@@ -45,6 +48,7 @@ p(z_1, \cdots, z_K; \alpha_1, \cdots, \alpha_K) &= \frac{\Gamma \left( \sum_{k=1
 p(x_1, \cdots, x_K| z_1, \cdots, z_K; n) &= \frac{n!}{\prod_{k=1}^K x_k!} \prod_{k=1}^K z_k^{x_k}
 \end{align*}
 $$
+
 ただし、$`x_1, \cdots, x_K`$について$`\sum_{k=1}^K x_k = n`$と制約される。
 同時分布、および事後分布は、簡単な計算によって解析的に得られる。
 
@@ -67,12 +71,15 @@ $$
  &= \sum_{k=1}^K (x_k + \alpha_k - \gamma_k) \mathbb{E}_{z \sim \hat{p}_\theta(z)} \left[ \ln{z_k} \right] - \ln{\Gamma \left( \sum_{k=1}^K \gamma_k \right)} + \sum_{k=1}^K  \ln{\Gamma \left( \gamma_k \right)} + \text{Const.}\\
 \end{align*}
 $$
+
 ここで、ディリクレ分布の性質として、$`\varphi(\gamma)`$をディガンマ関数とすると、
 
 $$
 \mathbb{E}_{z \sim \hat{p}_\theta(z)} \left[ \ln{z_k} \right] = \varphi{\left( \gamma_k \right)} - \varphi{\left( \sum_{i=1}^K \gamma_i \right)}
 $$
+
 が成立する[[Source](https://en.wikipedia.org/wiki/Dirichlet_distribution)]ため、最終的に変分下限は以下のように導かれる。
+
 $$
 \mathbb{E}_{z \sim \hat{p}_\theta(z)} \left[ \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} \right] = \sum_{k=1}^K (x_k + \alpha_k - \gamma_k) \left( \varphi{\left( \gamma_k \right)} - \varphi{\left( \sum_{i=1}^K \gamma_i \right)} \right) - \ln{\Gamma \left( \sum_{k=1}^K \gamma_k \right)} + \sum_{k=1}^K  \ln{\Gamma \left( \gamma_k \right)} + \text{Const.}\\
 $$
@@ -87,6 +94,7 @@ $$
  &= - \varphi{\left( \gamma_j \right)} + \varphi{\left( \sum_{i=1}^K \gamma_i \right)} + (x_j + \alpha_j - \gamma_j) \varphi^{(1)}{\left( \gamma_j \right)} -  \sum_{k=1}^K (x_k + \alpha_k - \gamma_k) \varphi^{(1)}{\left( \sum_{i=1}^K \gamma_i \right)}
 \end{align*}
 $$
+
 と書ける（$`\varphi^{(1)}(\gamma)`$はトリガンマ関数）。
 一方で第二項、第三項は容易に、
 
@@ -94,15 +102,18 @@ $$
 \frac{\partial}{\partial \gamma_j} \left( - \ln{\Gamma \left( \sum_{k=1}^K \gamma_k \right)} + \sum_{k=1}^K  \ln{\Gamma \left( \gamma_k \right)} \right)
  = - \varphi{\left( \sum_{k=1}^K \gamma_k \right)} + \varphi{\left( \gamma_j \right)}
 $$
+
 で得られるため、これらを合わせることで、変分下限の微分が得られる：
 
 $$
 \frac{\partial}{\partial \gamma_j} \mathbb{E}_{z \sim \hat{p}_\theta(z)} \left[ \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} \right] = (x_j + \alpha_j - \gamma_j) \varphi^{(1)}{\left( \gamma_j \right)} -  \sum_{k=1}^K (x_k + \alpha_k - \gamma_k) \varphi^{(1)}{\left( \sum_{i=1}^K \gamma_i \right)}
 $$
+
 変分下限の微分を$`0`$とおいた時の解について考えると、KLダイバージェンスが狭義凸であるため、変分下限の停留点が高々一つしか存在し得ないことに注意すれば、自明解：
 
 $$
 \forall j, \quad \gamma_j = x_j + \alpha_j
 $$
+
 が最大の変分下限を実現すると言える。
 以上より、変分下限の最大化によって得られる解が、真の事後分布と同じ確率分布を表現することが示された。
