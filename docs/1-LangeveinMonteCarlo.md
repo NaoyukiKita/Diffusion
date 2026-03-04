@@ -1,3 +1,8 @@
+$$
+\newcommand{\argmax}{\mathop{\rm argmax}\limits}
+\newcommand{\argmin}{\mathop{\rm argmin}\limits}
+$$
+
 ```Python
 import random, math, statistics
 ```

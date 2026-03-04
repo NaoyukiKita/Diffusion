@@ -1,3 +1,8 @@
+$$
+\newcommand{\argmax}{\mathop{\rm argmax}\limits}
+\newcommand{\argmin}{\mathop{\rm argmin}\limits}
+$$
+
 # Latent Variable Model
 
 潜在変数モデル（Latent Variable Model, LVM）は、観測変数$`x`$を生成する確率分布の裏に、何らかの確率的潜在変数$z$の存在を仮定するようなモデルである。

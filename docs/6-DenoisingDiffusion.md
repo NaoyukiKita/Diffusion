@@ -1,3 +1,8 @@
+$$
+\newcommand{\argmax}{\mathop{\rm argmax}\limits}
+\newcommand{\argmin}{\mathop{\rm argmin}\limits}
+$$
+
 # Denoising Diffusion Probabilistic Model
 
 デノイジング拡散確率モデル（Denoising Diffusion Probabilistic Model, DDPM）とは、ノイズが付与されたデータを潜在変数と捉え、元データに対しノイズを付与していく過程（拡散過程）を元に、潜在変数から元データを復元する過程（逆拡散過程、生成過程）を通じてデータを生成することを目指す、潜在変数モデルの一種である。
