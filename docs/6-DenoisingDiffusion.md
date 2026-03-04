@@ -1,8 +1,3 @@
-$$
-\newcommand{\argmax}{\mathop{\rm argmax}\limits}
-\newcommand{\argmin}{\mathop{\rm argmin}\limits}
-$$
-
 # Denoising Diffusion Probabilistic Model
 
 デノイジング拡散確率モデル（Denoising Diffusion Probabilistic Model, DDPM）とは、ノイズが付与されたデータを潜在変数と捉え、元データに対しノイズを付与していく過程（拡散過程）を元に、潜在変数から元データを復元する過程（逆拡散過程、生成過程）を通じてデータを生成することを目指す、潜在変数モデルの一種である。
@@ -30,14 +25,14 @@ DDPMは、観測変数$`x=x_0`$の裏に、$`T`$個の潜在変数$`x_{1:T} = x_
 生成器$`p(x_0, x_{1:T})`$が$`\hat{p}_\theta(x_0, x_{1:T})`$のように$`\theta`$に制御されること、また分類器は既知の事後分布$`q(x_{1:T}|x_0)`$を用いることに注意すると、変分下限は以下のように定義される。
 
 $$
-\theta^{\text{DDPM}} = \argmax_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\left( \frac{\hat{p}_\theta(x_0, x_{1:T})}{q(x_{1:T}|x_0)} \right)} \right]
+\theta^{\text{DDPM}} = \mathop{\rm argmax}\limits_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\left( \frac{\hat{p}_\theta(x_0, x_{1:T})}{q(x_{1:T}|x_0)} \right)} \right]
 $$
 
 <details><summary>変分下限の最大化はどのようなKLダイバージェンス最小化と等価であるのか？</summary><div>
 上記の変分下限最大化は、数式的には以下のようなKLダイバージェンスの最小化と等価である。
 
 $$
-\theta^{\text{DDPM}} = \argmin_\theta \text{KL}(q(x_{1:T}|x_0)||\hat{p}_\theta(x_{1:T}|x_0))
+\theta^{\text{DDPM}} = \mathop{\rm argmin}\limits_\theta \text{KL}(q(x_{1:T}|x_0)||\hat{p}_\theta(x_{1:T}|x_0))
 $$
 
 この式は上で述べた潜在変数モデルでの式変形を逆に辿ることで容易に得られる。
@@ -109,7 +104,7 @@ $$
 前々節で述べたように、DDPMは変分下限最大化によって生成過程$`\hat{p}_\theta(x_0, x_{1:T})`$の最適化を行う。
 
 $$
-\theta^{\text{DDPM}} = \argmax_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\left( \frac{\hat{p}_\theta (x_0, x_{1:T})}{q(x_{1:T}|x_0)} \right)} \right]
+\theta^{\text{DDPM}} = \mathop{\rm argmax}\limits_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\left( \frac{\hat{p}_\theta (x_0, x_{1:T})}{q(x_{1:T}|x_0)} \right)} \right]
 $$
 
 ここで、$`\theta`$に依存しない$`x_0, x_T`$を軸に変分下限を分解することを考えると、以下のような式が得られる。
@@ -117,7 +112,7 @@ $$
 $$
 \begin{align*}
 \theta^{\text{DDPM}}
- &= \argmax_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ -\sum_{t=2}^T \text{KL} \left( q(x_{t-1}|x_t, x_0) || \hat{p}_\theta(x_{t-1}|x_t) \right) + \ln{\hat{p}_\theta(x_0|x_1)} \right]
+ &= \mathop{\rm argmax}\limits_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ -\sum_{t=2}^T \text{KL} \left( q(x_{t-1}|x_t, x_0) || \hat{p}_\theta(x_{t-1}|x_t) \right) + \ln{\hat{p}_\theta(x_0|x_1)} \right]
 \end{align*}
 $$
 
@@ -142,8 +137,8 @@ $$
 $$
 \begin{align*}
 \theta^{\text{DDPM}}
- &= \argmax_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\left( \frac{\hat{p}_\theta(x_0|x_1)\hat{p}_\theta(x_1|x_2)\cdots, \hat{p}_\theta(x_{T-1}|x_T)\hat{p}_\theta(x_T)}{q(x_t|x_{t-1})p(x_{T-1}|x_{T-2})\cdots q(x_1|x_0)} \right)} \right] \\
- &= \argmax_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{p(x_T)} + \sum_{t=2}^T \ln{\left( \frac{\hat{p}_\theta(x_{t-1}|x_t)}{q(x_t|x_{t-1})} \right)} + \ln{\left( \frac{\hat{p}_\theta(x_0|x_1)}{q(x_1|x_0)} \right)} \right] \\
+ &= \mathop{\rm argmax}\limits_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\left( \frac{\hat{p}_\theta(x_0|x_1)\hat{p}_\theta(x_1|x_2)\cdots, \hat{p}_\theta(x_{T-1}|x_T)\hat{p}_\theta(x_T)}{q(x_t|x_{t-1})p(x_{T-1}|x_{T-2})\cdots q(x_1|x_0)} \right)} \right] \\
+ &= \mathop{\rm argmax}\limits_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{p(x_T)} + \sum_{t=2}^T \ln{\left( \frac{\hat{p}_\theta(x_{t-1}|x_t)}{q(x_t|x_{t-1})} \right)} + \ln{\left( \frac{\hat{p}_\theta(x_0|x_1)}{q(x_1|x_0)} \right)} \right] \\
 \end{align*}
 $$
 
@@ -159,11 +154,11 @@ $$
 $$
 \begin{align*}
 \theta^{\text{DDPM}}
- &= \argmax_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{p(x_T)} + \sum_{t=2}^T \ln{\left( \frac{\hat{p}_\theta(x_{t-1}|x_t)}{q(x_{t-1}|x_t,x_0)} \cdot \frac{q(x_{t-1}|x_0)}{q(x_t|x_0)}\right)} + \ln{\left( \frac{\hat{p}_\theta(x_0|x_1)}{q(x_1|x_0)} \right)} \right] \\
- &= \argmax_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{p(x_T)} + \sum_{t=2}^T \ln{\left( \frac{\hat{p}_\theta(x_{t-1}|x_t)}{q(x_{t-1}|x_t,x_0)}\right)} + \sum_{t=2}^T \ln{\left(\frac{q(x_{t-1}|x_0)}{q(x_t|x_0)}\right)} + \ln{\left( \frac{\hat{p}_\theta(x_0|x_1)}{q(x_1|x_0)} \right)} \right] \\
- &= \argmax_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{p(x_T)} + \sum_{t=2}^T \ln{\left( \frac{\hat{p}_\theta(x_{t-1}|x_t)}{q(x_{t-1}|x_t,x_0)}\right)} + \ln{\left(\frac{q(x_1|x_0)}{q(x_t|x_0)}\right)} + \ln{\left( \frac{\hat{p}_\theta(x_0|x_1)}{q(x_1|x_0)} \right)} \right] \\
- &= \argmax_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\left( \frac{p(x_T)}{q(x_t|x_0)} \right)} + \sum_{t=2}^T \ln{\left( \frac{\hat{p}_\theta(x_{t-1}|x_t)}{q(x_{t-1}|x_t,x_0)}\right)} + \ln{\hat{p}_\theta(x_0|x_1)} \right] \\
- &= \argmax_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ -\sum_{t=2}^T \text{KL} \left( q(x_{t-1}|x_t, x_0) || \hat{p}_\theta(x_{t-1}|x_t) \right) + \ln{\hat{p}_\theta(x_0|x_1)} \right] + \text{Const.}
+ &= \mathop{\rm argmax}\limits_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{p(x_T)} + \sum_{t=2}^T \ln{\left( \frac{\hat{p}_\theta(x_{t-1}|x_t)}{q(x_{t-1}|x_t,x_0)} \cdot \frac{q(x_{t-1}|x_0)}{q(x_t|x_0)}\right)} + \ln{\left( \frac{\hat{p}_\theta(x_0|x_1)}{q(x_1|x_0)} \right)} \right] \\
+ &= \mathop{\rm argmax}\limits_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{p(x_T)} + \sum_{t=2}^T \ln{\left( \frac{\hat{p}_\theta(x_{t-1}|x_t)}{q(x_{t-1}|x_t,x_0)}\right)} + \sum_{t=2}^T \ln{\left(\frac{q(x_{t-1}|x_0)}{q(x_t|x_0)}\right)} + \ln{\left( \frac{\hat{p}_\theta(x_0|x_1)}{q(x_1|x_0)} \right)} \right] \\
+ &= \mathop{\rm argmax}\limits_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{p(x_T)} + \sum_{t=2}^T \ln{\left( \frac{\hat{p}_\theta(x_{t-1}|x_t)}{q(x_{t-1}|x_t,x_0)}\right)} + \ln{\left(\frac{q(x_1|x_0)}{q(x_t|x_0)}\right)} + \ln{\left( \frac{\hat{p}_\theta(x_0|x_1)}{q(x_1|x_0)} \right)} \right] \\
+ &= \mathop{\rm argmax}\limits_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\left( \frac{p(x_T)}{q(x_t|x_0)} \right)} + \sum_{t=2}^T \ln{\left( \frac{\hat{p}_\theta(x_{t-1}|x_t)}{q(x_{t-1}|x_t,x_0)}\right)} + \ln{\hat{p}_\theta(x_0|x_1)} \right] \\
+ &= \mathop{\rm argmax}\limits_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ -\sum_{t=2}^T \text{KL} \left( q(x_{t-1}|x_t, x_0) || \hat{p}_\theta(x_{t-1}|x_t) \right) + \ln{\hat{p}_\theta(x_0|x_1)} \right] + \text{Const.}
 \end{align*}
 $$
 

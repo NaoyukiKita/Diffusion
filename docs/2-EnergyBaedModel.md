@@ -1,8 +1,3 @@
-$$
-\newcommand{\argmax}{\mathop{\rm argmax}\limits}
-\newcommand{\argmin}{\mathop{\rm argmin}\limits}
-$$
-
 # Energy-Based Model
 
 エネルギーベースモデル (Energy-Based Model)とは、確率生成モデルの一種である。エネルギーベースモデルは確率分布$`p(x)`$を以下のようにエネルギー関数$`E(x)`$と分配関数$`Z`$によってモデル化する。

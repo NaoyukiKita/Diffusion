@@ -1,8 +1,3 @@
-$$
-\newcommand{\argmax}{\mathop{\rm argmax}\limits}
-\newcommand{\argmin}{\mathop{\rm argmin}\limits}
-$$
-
 # Latent Variable Model
 
 潜在変数モデル（Latent Variable Model, LVM）は、観測変数$`x`$を生成する確率分布の裏に、何らかの確率的潜在変数$z$の存在を仮定するようなモデルである。
@@ -17,19 +12,19 @@ $$
 $$
 \begin{align*}
 \theta^{\text{LVM}}
- &= \argmin_{\theta} \text{KL} \left( \hat{p}_\theta(z) || p(z|x) \right) \\
- &= \argmin_{\theta} \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{\hat{p}_\theta(z)}{p(z|x)} \right)} dz \\
- &= \argmin_{\theta} \left( \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{p(z|x)} \right)} dz - \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} dz \right) \\
- &= \argmin_{\theta} \left( \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{p(x)} dz - \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} dz \right) \\
- &= \argmin_{\theta} \left( \ln{p(x)} - \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} dz \right) \\
- &= \argmin_{\theta} \left( \ln{p(x)} - \mathbb{E}_{z \sim \hat{p}_\theta(z)} \left[ \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} \right] \right)
+ &= \mathop{\rm argmin}\limits_{\theta} \text{KL} \left( \hat{p}_\theta(z) || p(z|x) \right) \\
+ &= \mathop{\rm argmin}\limits_{\theta} \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{\hat{p}_\theta(z)}{p(z|x)} \right)} dz \\
+ &= \mathop{\rm argmin}\limits_{\theta} \left( \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{p(z|x)} \right)} dz - \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} dz \right) \\
+ &= \mathop{\rm argmin}\limits_{\theta} \left( \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{p(x)} dz - \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} dz \right) \\
+ &= \mathop{\rm argmin}\limits_{\theta} \left( \ln{p(x)} - \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} dz \right) \\
+ &= \mathop{\rm argmin}\limits_{\theta} \left( \ln{p(x)} - \mathbb{E}_{z \sim \hat{p}_\theta(z)} \left[ \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} \right] \right)
 \end{align*}
 $$
 
 ここで、最右辺第一項$`\ln{p(x)}`$が$`\theta`$に依存せず無視できるため、KLダイバージェンスの最小化は第二項の最大化と等価であると言える。
 
 $$
-\theta^{\text{LVM}} = \argmax_{\theta} \mathbb{E}_{z \sim \hat{p}_\theta(z)} \left[ \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} \right]
+\theta^{\text{LVM}} = \mathop{\rm argmax}\limits_{\theta} \mathbb{E}_{z \sim \hat{p}_\theta(z)} \left[ \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} \right]
 $$
 
 この項を変分下限（Evidence Lower Bound, ELBO）と呼ぶ。
