@@ -11,7 +11,7 @@ from matplotlib import pyplot as plt
 1. **低密度領域における推定スコア関数の不正確性**：被積分関数が$`p(x)`$に重み付けされているために、$`p(x)`$の小さい領域が$`p(x)`$の大きい領域に比べて相対的に無視されることに起因して、推定されるスコア関数が$`p(x)`$の小さな領域で不正確になる。
 
 $$
-\theta^{\text{ESM}} = \argmin_\theta \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ {\left|\left| \hat{s}_\theta(x) - s(x) \right|\right|}^2 \right] = \frac{1}{2} \int_{\mathbb{R}^d} p(x) {\left|\left| \hat{s}_\theta(x) - s(x) \right|\right|}^2 dx
+\theta^{\text{ESM}} = \text{argmin}_\theta \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ {\left|\left| \hat{s}_\theta(x) - s(x) \right|\right|}^2 \right] = \frac{1}{2} \int_{\mathbb{R}^d} p(x) {\left|\left| \hat{s}_\theta(x) - s(x) \right|\right|}^2 dx
 $$
 
 2. **多峰性を持つ確率分布に対する学習の困難性**：MCMCを用いたサンプリングに共通する問題として、サンプルが直前に得られたサンプルに立脚して得られるため、データ分布が多峰性を持つ場合、ある峰から別の峰に移るために多くのステップを要する。例えばランジュバン・モンテカルロでは以下の更新則に従う。

@@ -16,7 +16,7 @@ from matplotlib import pyplot as plt
 明示的スコアマッチングは、スコアマッチングの最も直接的なアプローチであり、真のスコア関数$`s(x)`$が既知であることを追加の仮定として、二乗和誤差を最小化することによって$`\theta`$の最適化を行う。
 
 $$
-\theta^{\text{ESM}} =  \argmin_\theta \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ {\left|\left| \hat{s}_\theta(x) - s(x) \right|\right|}^2 \right]
+\theta^{\text{ESM}} =  \text{argmin}_\theta \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ {\left|\left| \hat{s}_\theta(x) - s(x) \right|\right|}^2 \right]
 $$
 
 明示的スコアマッチングは、真のスコア関数$`s(x)`$が既知であるという非現実的な仮定に立脚する方法であるため、明らかに実用的ではない。
@@ -26,7 +26,7 @@ $$
 暗黙的スコアマッチングは、真のスコア関数$`s(x)`$が未知である条件下で$`\theta`$を最適化する。
 
 $$
-\theta^{\text{ISM}} = \argmin_\theta \mathbb{E}_{x \sim p(x)} \left[ \frac{1}{2} {\left|\left| \hat{s}_\theta (x) \right|\right|}^2 + \text{tr} \left( \nabla_x \hat{s}_\theta (x) \right)\right]
+\theta^{\text{ISM}} = \text{argmin}_\theta \mathbb{E}_{x \sim p(x)} \left[ \frac{1}{2} {\left|\left| \hat{s}_\theta (x) \right|\right|}^2 + \text{tr} \left( \nabla_x \hat{s}_\theta (x) \right)\right]
 $$
 
 真のスコア関数$`s(x)`$が未知であっても最適化できる点が強力であるが、ヤコビ行列$`\nabla_x \hat{s}_\theta (x)`$のトレースを計算することが実用上コストの大きいものであった。
@@ -36,19 +36,20 @@ $$
 証明には以下の４つの仮定を要する。
 
 1. $`p(x)`$が微分可能
-2. $\mathbb{E}_{x \sim p(x)} \left[ {\left|\left| s(x) \right|\right|}^2 \right]$が有限
-3. 任意の$`\theta`$について$\mathbb{E}_{x \sim p(x)} \left[ {\left|\left| \hat{s}_\theta (x) \right|\right|}^2 \right]$が有限
-4. $\lim_{||x|| \rightarrow \infty} \left[ p(x)\hat{s}_\theta (x) \right] = 0$
+2. $`\mathbb{E}_{x \sim p(x)} \left[ {\left|\left| s(x) \right|\right|}^2 \right]`$が有限
+3. 任意の$`\theta`$について$`\mathbb{E}_{x \sim p(x)} \left[ {\left|\left| \hat{s}_\theta (x) \right|\right|}^2 \right]`$が有限
+4. $`\lim_{||x|| \rightarrow \infty} \left[ p(x)\hat{s}_\theta (x) \right] = 0`$
 
 まず、明示的スコアマッチングの式を展開する。
+
 $$
 \begin{align*}
 \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ {\left|\left| \hat{s}_\theta(x) - s(x) \right|\right|}^2 \right] = \int_{\mathbb{R}^d} p(x) \left(  \frac{1}{2} {|| \hat{s}_\theta(x) ||}^2 - {\hat{s}_\theta(x)}^\top s(x) + \frac{1}{2} {|| s(x)||}^2 \right) dx
 \end{align*}
 $$
 
-最右辺の各項に着目すると、第一項$(1/2) {|| \hat{s}_\theta(x) ||}^2$は暗黙的スコアマッチングの式の第一項と一致しており、また第三項は$`\theta`$を含まないため定数項として無視できる。
-よって、最右辺第二項$-{\hat{s}_\theta(x)}^\top s(x)$が、暗黙的スコアマッチングの式の第二項$\text{tr} \left( \nabla_x \hat{s}_\theta (x) \right)$と等しい（少なくとも、定数の差しかない）ことを示せば良い。
+最右辺の各項に着目すると、第一項$`(1/2) {|| \hat{s}_\theta(x) ||}^2`$は暗黙的スコアマッチングの式の第一項と一致しており、また第三項は$`\theta`$を含まないため定数項として無視できる。
+よって、最右辺第二項$`-{\hat{s}_\theta(x)}^\top s(x)`$が、暗黙的スコアマッチングの式の第二項$`\text{tr} \left( \nabla_x \hat{s}_\theta (x) \right)`$と等しい（少なくとも、定数の差しかない）ことを示せば良い。
 
 ---
 第二項の内積を総和として表現すると、
@@ -57,8 +58,8 @@ $$
 -\sum_{i} \int_{\mathbb{R}^d} p(x) \hspace{1mm} (s(x))_i \hspace{1mm} (\hat{s}_\theta (x))_i dx
 $$
 
-と書ける。ただし、$(s(x))_i, (\hat{s}_\theta (x))_i$はそれぞれ$s(x), \hat{s}_\theta (x)$の$i$番目の成分である。
-ここで、$s(x)=\nabla_x \ln{(p(x))}$であることに注意すると、
+と書ける。ただし、$`(s(x))_i, (\hat{s}_\theta (x))_i$はそれぞれ$s(x), \hat{s}_\theta (x)`$の$`i`$番目の成分である。
+ここで、$`s(x)=\nabla_x \ln{(p(x))}`$であることに注意すると、
 
 $$
 \begin{align*}
@@ -70,16 +71,16 @@ $$
 $$
 
 と書ける。
-よって、目標の項$\text{tr} \left( \nabla_x \hat{s}_\theta (x) \right)$も同様に総和として表現できることを考慮すれば、以下の等式を示すことができれば良いと言える。
+よって、目標の項$`\text{tr} \left( \nabla_x \hat{s}_\theta (x) \right)`$も同様に総和として表現できることを考慮すれば、以下の等式を示すことができれば良いと言える。
 
 $$
 -\int_{\mathbb{R}^d} \frac{\partial p(x)}{\partial x_i} \hspace{1mm} (\hat{s}_\theta (x))_i dx = \int_{\mathbb{R}^d} \frac{\partial (\hat{s}_\theta (x))_i}{\partial x_i} \hspace{1mm} p(x) dx
 $$
 
 ---
-任意の微分可能な関数$f(x), g(x)$について、以下が成り立つ。
-ここで、$x_{\backslash i}$は$x$の$i$番目以外の要素である。
-証明は、$f(x)g(x)$を$x_i$について微分し、それを$x_i \in \mathbb{R}$について積分することで容易に与えられる。
+任意の微分可能な関数$`f(x), g(x)`$について、以下が成り立つ。
+ここで、$`x_{\backslash i}`$は$`x`$の$`i`$番目以外の要素である。
+証明は、$`f(x)g(x)`$を$`x_i`$について微分し、それを$`x_i \in \mathbb{R}`$について積分することで容易に与えられる。
 
 $$
 \lim_{x_i \rightarrow \infty} f(x_i, x_{\backslash i}) - \lim_{x_i \rightarrow -\infty} f(x_i, x_{\backslash i}) = \int_{-\infty}^{\infty} f(x) \frac{\partial g(x)}{\partial x_i} dx_i + \int_{-\infty}^{\infty} g(x) \frac{\partial f(x)}{\partial x_i} dx_i
@@ -139,13 +140,13 @@ $$
 デノイジングスコアマッチングは、データに対しノイズを付与することを考え、直接スコアを目標に学習するのではなく、ノイズ付きデータの条件付き確率分布に対するスコアを目標に学習する。
 
 まず、データに対しノイズを付与する。
-ノイズは平均$0$の正規分布からサンプリングされ、それを元データ$x$に加算することによってノイズ付きデータ$\tilde{x}$を得る。
+ノイズは平均$`0`$の正規分布からサンプリングされ、それを元データ$`x`$に加算することによってノイズ付きデータ$`\tilde{x}`$を得る。
 
 $$
 \tilde{x} = x + \epsilon, \quad \epsilon \sim \mathcal{N}(0, \sigma^2)
 $$
 
-これは$x$を所与のものとしたときの$\tilde{x}$の確率分布$p_\sigma(\tilde{x} | x)$が単純な正規分布で表現され、またそのスコア関数$s_\sigma(\tilde{x} | x)$が解析的に求められることを意味している。
+これは$`x`$を所与のものとしたときの$`\tilde{x}`$の確率分布$`p_\sigma(\tilde{x} | x)`$が単純な正規分布で表現され、またそのスコア関数$`s_\sigma(\tilde{x} | x)`$が解析的に求められることを意味している。
 
 $$
 \begin{align*}
@@ -154,14 +155,14 @@ s_\sigma(\tilde{x} | x) &= \nabla_{\tilde{x}} \ln{\left( p_\sigma(\tilde{x} | x)
 \end{align*}
 $$
 
-デノイジングスコアマッチングでは、ノイズを付与する前／付与した後のデータ$(x, \tilde{x})$の同時確率分布$p(x)p(\tilde{x}|x)$を用いて、条件付きスコア関数$s_\sigma(\tilde{x} | x)$を目標とした最適化を行う。
+デノイジングスコアマッチングでは、ノイズを付与する前／付与した後のデータ$`(x, \tilde{x})`$の同時確率分布$`p(x)p(\tilde{x}|x)`$を用いて、条件付きスコア関数$`s_\sigma(\tilde{x} | x)`$を目標とした最適化を行う。
 
 $$
-\theta^{\text{DSM}} = \argmin_\theta \frac{1}{2} \mathbb{E}_{(x, \tilde{x}) \sim p(x)p(\tilde{x}|x)} \left[ {\left|\left| \hat{s}_\theta(\tilde{x}) - s_\sigma(\tilde{x} | x) \right|\right|}^2 \right] = \argmin_\theta \frac{1}{2} \mathbb{E}_{x \sim p(x), \epsilon \sim \mathcal{N}(0, \sigma^2)} \left[ {\left|\left| \hat{s}_\theta(x + \epsilon) + \frac{1}{\sigma^2} \epsilon \right|\right|}^2 \right]
+\theta^{\text{DSM}} = \text{argmin}_\theta \frac{1}{2} \mathbb{E}_{(x, \tilde{x}) \sim p(x)p(\tilde{x}|x)} \left[ {\left|\left| \hat{s}_\theta(\tilde{x}) - s_\sigma(\tilde{x} | x) \right|\right|}^2 \right] = \text{argmin}_\theta \frac{1}{2} \mathbb{E}_{x \sim p(x), \epsilon \sim \mathcal{N}(0, \sigma^2)} \left[ {\left|\left| \hat{s}_\theta(x + \epsilon) + \frac{1}{\sigma^2} \epsilon \right|\right|}^2 \right]
 $$
 
-さて、上で定義された最適化関数は、ノイズ付きデータが従う分布$p_\sigma(\tilde{x})$による明示的スコアマッチングと定数項を除き等しいことが知られている；
-$p_\sigma(\tilde{x})$のスコア関数を$s_\sigma(\tilde{x})$とすると、以下が成立する。
+さて、上で定義された最適化関数は、ノイズ付きデータが従う分布$`p_\sigma(\tilde{x})`$による明示的スコアマッチングと定数項を除き等しいことが知られている；
+$`p_\sigma(\tilde{x})`$のスコア関数を$`s_\sigma(\tilde{x})`$とすると、以下が成立する。
 
 $$
 \frac{1}{2} \mathbb{E}_{(x, \tilde{x}) \sim p(x)p(\tilde{x}|x)} \left[ {\left|\left| \hat{s}_\theta(\tilde{x}) - s_\sigma(\tilde{x} | x) \right|\right|}^2 \right] = \frac{1}{2} \mathbb{E}_{\tilde{x} \sim p_\sigma(\tilde{x})} \left[ {\left|\left| \hat{s}_\theta(\tilde{x}) - s_\sigma(\tilde{x}) \right|\right|}^2  \right] + \text{Const.}
@@ -173,7 +174,7 @@ $$
 
 <details><summary>デノイジングスコアマッチングの名前の由来</summary><div>
 
-条件付きスコア関数$`s_\sigma(\tilde{x} | x)`$について考える。$`p_\sigma(\tilde{x} | x)`$が$x$を平均とした正規分布として表現されることを考えれば、$`s_\sigma(\tilde{x} | x)`$は$`\tilde{x}`$から$`x`$への方向を指していると解釈できる。
+条件付きスコア関数$`s_\sigma(\tilde{x} | x)`$について考える。$`p_\sigma(\tilde{x} | x)`$が$`x`$を平均とした正規分布として表現されることを考えれば、$`s_\sigma(\tilde{x} | x)`$は$`\tilde{x}`$から$`x`$への方向を指していると解釈できる。
 よって、それに近似するように最適化された$`\hat{s}_\theta(\tilde{x})`$は、付与されたノイズを除去するように働く。
 これがデノイジングスコアマッチングの名前の由来である。
 
@@ -219,7 +220,7 @@ $$
 \end{align*}
 $$
 
-ここで、最右辺中の$\nabla_{\tilde{x}} p_\sigma(\tilde{x})$についてさらに変形する。
+ここで、最右辺中の$`\nabla_{\tilde{x}} p_\sigma(\tilde{x})`$についてさらに変形する。
 
 $$
 \begin{align*}
@@ -308,12 +309,13 @@ def langeveinMonteCarlo(m, s):
 
 $$
 \begin{align*}
-m^{\text{ESM}}, s^{\text{ESM}} &= \argmin_{m, s} \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ {\left|\left| \hat{s}_\theta(x) - s(x) \right|\right|}^2 \right] \\
- &= \argmin_{m, s} \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ {\left( -\frac{x-m}{s^2} + \frac{x(\nu + 1)}{x^2 + \nu} \right)}^2 \right]
+m^{\text{ESM}}, s^{\text{ESM}} &= \text{argmin}_{m, s} \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ {\left|\left| \hat{s}_\theta(x) - s(x) \right|\right|}^2 \right] \\
+ &= \text{argmin}_{m, s} \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ {\left( -\frac{x-m}{s^2} + \frac{x(\nu + 1)}{x^2 + \nu} \right)}^2 \right]
 \end{align*}
 $$
 
-$m, s$についての勾配は、
+$`m, s`$についての勾配は、
+
 $$
 \begin{align*}
 \nabla_m &= \frac{\partial}{\partial m} \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ {\left( -\frac{x-m}{s^2} + \frac{x(\nu + 1)}{x^2 + \nu} \right)}^2 \right] = \mathbb{E}_{x \sim p(x)} \left[  \frac{1}{s^2} \left( -\frac{x-m}{s^2} + \frac{x(\nu + 1)}{x^2 + \nu} \right) \right] \\
@@ -347,8 +349,8 @@ Pred Mean: 0.0146, Pred Variance: 1.3087
 ### Example 1-2. Implicit Score Matching
 $$
 \begin{align*}
-m^{\text{ISM}}, s^{\text{ISM}} &= \argmin_{m, s} \mathbb{E}_{x \sim p(x)} \left[ \frac{1}{2} {\left|\left| \hat{s}_\theta (x) \right|\right|}^2 + \text{tr} \left( \nabla_x \hat{s}_\theta (x) \right)\right] \\
- &= \argmin_{m, s} \mathbb{E}_{x \sim p(x)} \left[ \frac{1}{2} {\left( -\frac{x-m}{s^2} \right)}^2 -\frac{1}{s^2} \right]\\
+m^{\text{ISM}}, s^{\text{ISM}} &= \text{argmin}_{m, s} \mathbb{E}_{x \sim p(x)} \left[ \frac{1}{2} {\left|\left| \hat{s}_\theta (x) \right|\right|}^2 + \text{tr} \left( \nabla_x \hat{s}_\theta (x) \right)\right] \\
+ &= \text{argmin}_{m, s} \mathbb{E}_{x \sim p(x)} \left[ \frac{1}{2} {\left( -\frac{x-m}{s^2} \right)}^2 -\frac{1}{s^2} \right]\\
 \nabla_m &= \frac{\partial}{\partial m} \mathbb{E}_{x \sim p(x)} \left[ \frac{1}{2} {\left( -\frac{x-m}{s^2} \right)}^2 -\frac{1}{s^2} \right] = \mathbb{E}_{x \sim p(x)} \left[ - \frac{x-m}{s^4} \right] \\
 \nabla_s &= \frac{\partial}{\partial s} \mathbb{E}_{x \sim p(x)} \left[ \frac{1}{2} {\left( -\frac{x-m}{s^2} \right)}^2 -\frac{1}{s^2} \right] = \mathbb{E}_{x \sim p(x)} \left[ -2\frac{{(x-m)}^2}{s^5} + \frac{2}{s^3} \right]
 \end{align*}
@@ -380,10 +382,10 @@ Pred Mean: 0.0101, Pred Variance: 1.2861
 ### Example 1-3. Denoising Score Matching
 $$
 \begin{align*}
-m^{\text{DSM}}, s^{\text{DSM}} &= \argmin_{m, s} \frac{1}{2} \mathbb{E}_{x \sim p(x), \epsilon \sim \mathcal{N}(0, \sigma^2)} \left[ {\left|\left| \hat{s}_\theta(x + \epsilon) + \frac{1}{\sigma^2} \epsilon \right|\right|}^2 \right] \\
- &= \argmin_{m, s} \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ \mathbb{E}_{\epsilon \sim \mathcal{N}(0, \sigma^2)} \left[ {\left( -\frac{x + \epsilon - m}{s^2} + \frac{1}{\sigma^2} \epsilon \right)}^2 \right] \right] \\
- &= \argmin_{m, s} \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ \mathbb{V}_{\epsilon \sim \mathcal{N}(0, \sigma^2)} \left[ -\frac{x + \epsilon - m}{s^2} + \frac{1}{\sigma^2} \epsilon \right] + {\left( \mathbb{E}_{\epsilon \sim \mathcal{N}(0, \sigma^2)} \left[ -\frac{x + \epsilon - m}{s^2} + \frac{1}{\sigma^2} \epsilon \right] \right)}^2 \right] \\
- &= \argmin_{m, s} \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ {\left( -\frac{\sigma^2}{s^2}+1 \right)} + {\left( -\frac{x-m}{s^2} \right)}^2 \right] \\
+m^{\text{DSM}}, s^{\text{DSM}} &= \text{argmin}_{m, s} \frac{1}{2} \mathbb{E}_{x \sim p(x), \epsilon \sim \mathcal{N}(0, \sigma^2)} \left[ {\left|\left| \hat{s}_\theta(x + \epsilon) + \frac{1}{\sigma^2} \epsilon \right|\right|}^2 \right] \\
+ &= \text{argmin}_{m, s} \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ \mathbb{E}_{\epsilon \sim \mathcal{N}(0, \sigma^2)} \left[ {\left( -\frac{x + \epsilon - m}{s^2} + \frac{1}{\sigma^2} \epsilon \right)}^2 \right] \right] \\
+ &= \text{argmin}_{m, s} \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ \mathbb{V}_{\epsilon \sim \mathcal{N}(0, \sigma^2)} \left[ -\frac{x + \epsilon - m}{s^2} + \frac{1}{\sigma^2} \epsilon \right] + {\left( \mathbb{E}_{\epsilon \sim \mathcal{N}(0, \sigma^2)} \left[ -\frac{x + \epsilon - m}{s^2} + \frac{1}{\sigma^2} \epsilon \right] \right)}^2 \right] \\
+ &= \text{argmin}_{m, s} \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ {\left( -\frac{\sigma^2}{s^2}+1 \right)} + {\left( -\frac{x-m}{s^2} \right)}^2 \right] \\
 \nabla_m &= \frac{\partial}{\partial m} \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ {\left( -\frac{\sigma^2}{s^2}+1 \right)} + {\left( -\frac{x-m}{s^2} \right)}^2 \right] = \mathbb{E}_{x \sim p(x)} \left[ \frac{1}{s^2} {\left( -\frac{x-m}{s^2} \right)} \right] \\
 \nabla_s &= \frac{\partial}{\partial s} \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[ {\left( -\frac{\sigma^2}{s^2}+1 \right)} + {\left( -\frac{x-m}{s^2} \right)}^2 \right] = \mathbb{E}_{x \sim p(x)} \left[ \frac{\sigma^2}{s^3} -2\frac{{(x-m)}^2}{s^5} \right] \\
 \end{align*}
