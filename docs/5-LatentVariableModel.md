@@ -12,19 +12,19 @@ $$
 $$
 \begin{align*}
 \theta^{\text{LVM}}
- &= \mathop{\rm argmin}\limits_{\theta} \text{KL} \left( \hat{p}_\theta(z) || p(z|x) \right) \\
- &= \mathop{\rm argmin}\limits_{\theta} \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{\hat{p}_\theta(z)}{p(z|x)} \right)} dz \\
- &= \mathop{\rm argmin}\limits_{\theta} \left( \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{p(z|x)} \right)} dz - \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} dz \right) \\
- &= \mathop{\rm argmin}\limits_{\theta} \left( \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{p(x)} dz - \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} dz \right) \\
- &= \mathop{\rm argmin}\limits_{\theta} \left( \ln{p(x)} - \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} dz \right) \\
- &= \mathop{\rm argmin}\limits_{\theta} \left( \ln{p(x)} - \mathbb{E}_{z \sim \hat{p}_\theta(z)} \left[ \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} \right] \right)
+ &= \text{argmin}_{\theta} \text{KL} \left( \hat{p}_\theta(z) || p(z|x) \right) \\
+ &= \text{argmin}_{\theta} \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{\hat{p}_\theta(z)}{p(z|x)} \right)} dz \\
+ &= \text{argmin}_{\theta} \left( \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{p(z|x)} \right)} dz - \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} dz \right) \\
+ &= \text{argmin}_{\theta} \left( \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{p(x)} dz - \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} dz \right) \\
+ &= \text{argmin}_{\theta} \left( \ln{p(x)} - \int_{\mathcal{Z}} \hat{p}_\theta(z) \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} dz \right) \\
+ &= \text{argmin}_{\theta} \left( \ln{p(x)} - \mathbb{E}_{z \sim \hat{p}_\theta(z)} \left[ \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} \right] \right)
 \end{align*}
 $$
 
 ここで、最右辺第一項$`\ln{p(x)}`$が$`\theta`$に依存せず無視できるため、KLダイバージェンスの最小化は第二項の最大化と等価であると言える。
 
 $$
-\theta^{\text{LVM}} = \mathop{\rm argmax}\limits_{\theta} \mathbb{E}_{z \sim \hat{p}_\theta(z)} \left[ \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} \right]
+\theta^{\text{LVM}} = \text{argmax}_{\theta} \mathbb{E}_{z \sim \hat{p}_\theta(z)} \left[ \ln{\left( \frac{p(x, z)}{\hat{p}_\theta(z)} \right)} \right]
 $$
 
 この項を変分下限（Evidence Lower Bound, ELBO）と呼ぶ。
