@@ -28,7 +28,24 @@ $$
 \theta^{\text{DDPM}} = \text{argmax}_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\left( \frac{\hat{p}_\theta(x_0, x_{1:T})}{q(x_{1:T}|x_0)} \right)} \right]
 $$
 
-$`\rightarrow`$ 付録6-1: 変分下限の最大化はどのようなKLダイバージェンス最小化と等価か？
+<details><summary>変分下限の最大化はどのようなKLダイバージェンス最小化と等価であるのか？</summary><div>
+上記の変分下限最大化は、数式的には以下のようなKLダイバージェンスの最小化と等価である。
+
+$$
+\theta^{\text{DDPM}} = \text{argmin}_\theta \text{KL}(q(x_{1:T}|x_0)||\hat{p}_\theta(x_{1:T}|x_0))
+$$
+
+この式は上で述べた潜在変数モデルでの式変形を逆に辿ることで容易に得られる。
+
+さて、式中の$`\hat{p}_\theta(x_{1:T}|x_0)`$は何を意味しているのか？
+これは、モデルとして定義された$`\hat{p}_\theta(x_0, x_{1:T})`$に立脚して理論的に存在が証明された分布でしかない。
+
+$$
+\hat{p}_\theta(x_{1:T}|x_0) = \frac{\hat{p}_\theta(x_0, x_{1:T})}{p(x_0)}
+$$
+
+上式でも明らかなように、$`\hat{p}_\theta(x_{1:T}|x_0)`$の導出には$`p(x_0)`$を必要とし、当然明示的に定義されていないし、得られもしないし、また生成時に用いられもしない。
+</div></details>
 
 ## DDPMの生成器・分類器
 前節で述べたように、DDPMは$`x_T`$から$`x_0`$までが一列に連なったモデルである。
@@ -67,50 +84,7 @@ q(x_t|x_0) &= \mathcal{N}(x_t; \sqrt{\bar{\alpha}_t}x_0, \bar{\beta}_t), \quad \
 \end{align*}
 $$
 
-$`\rightarrow`$ 付録6-2: 拡散過程の性質の証明
-
-## DDPMの学習
-
-前々節で述べたように、DDPMは変分下限最大化によって生成過程$`\hat{p}_\theta(x_0, x_{1:T})`$の最適化を行う。
-
-$$
-\theta^{\text{DDPM}} = \text{argmax}_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\left( \frac{\hat{p}_\theta (x_0, x_{1:T})}{q(x_{1:T}|x_0)} \right)} \right]
-$$
-
-適切な仮定を置けば、上の問題は以下のような最適化問題に帰着する。
-
-$$
-\begin{align*}
-\theta^{\text{DDPM}} &= \text{argmin}_\theta \sum_{t=0}^{T-1} L_t \\
-L_0 &= -\mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\mathcal{N} (x_0; \mu_\theta(x_1, 1), \sigma_\theta^2(x_1, 1))} \right] \\
-L_t &= \mathbb{E}_{x_0, \epsilon} \left[ \frac{\beta_{t+1}^2}{2\sigma_{t+1}^2\alpha_{t+1}\bar{\beta}_{t+1}} {\left|\left| \epsilon - \epsilon_\theta\left(\sqrt{\bar{\alpha}_{t+1}}x_0 + \sqrt{\bar{\beta}_{t+1}}\epsilon, t\right) \right|\right|}^2 \right]
-\end{align*}
-$$
-
-$`\rightarrow`$ 付録6-3: 目的関数の分解
-
-## 付録
-
-### 6-1 変分下限の最大化はどのようなKLダイバージェンス最小化と等価か？
-
-変分下限最大化は、数式的には以下のようなKLダイバージェンスの最小化と等価である。
-
-$$
-\theta^{\text{DDPM}} = \text{argmin}_\theta \text{KL}(q(x_{1:T}|x_0)||\hat{p}_\theta(x_{1:T}|x_0))
-$$
-
-この式は上で述べた潜在変数モデルでの式変形を逆に辿ることで容易に得られる。
-
-さて、式中の$`\hat{p}_\theta(x_{1:T}|x_0)`$は何を意味しているのか？
-これは、モデルとして定義された$`\hat{p}_\theta(x_0, x_{1:T})`$に立脚して理論的に存在が証明された分布でしかない。
-
-$$
-\hat{p}_\theta(x_{1:T}|x_0) = \frac{\hat{p}_\theta(x_0, x_{1:T})}{p(x_0)}
-$$
-
-上式でも明らかなように、$`\hat{p}_\theta(x_{1:T}|x_0)`$の導出には$`p(x_0)`$を必要とし、当然明示的に定義されていないし、得られもしないし、また生成時に用いられもしない。
-
-### 6-2 拡散過程の性質の証明
+<details><summary>証明</summary><div>
 
 証明は帰納法を用いると容易である。
 1. $`t=1`$の時、$`\bar{\alpha}_t = \alpha_1`$より明らかに成立する。
@@ -123,8 +97,40 @@ $$
     x_{k+1} \sim \mathcal{N}(\sqrt{\bar{\alpha}_{k+1}}x_0, \alpha_{k+1}(1-\bar{\alpha}_k) + 1-\alpha_{k+1}) = \mathcal{N}(\sqrt{\bar{\alpha}_{k+1}}x_0, 1-\bar{\alpha}_{k+1})
     $$
     が成立する。
+</div></details>
 
-### 6-3 的関数の分解
+## DDPMの学習
+
+前々節で述べたように、DDPMは変分下限最大化によって生成過程$`\hat{p}_\theta(x_0, x_{1:T})`$の最適化を行う。
+
+$$
+\theta^{\text{DDPM}} = \text{argmax}_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\left( \frac{\hat{p}_\theta (x_0, x_{1:T})}{q(x_{1:T}|x_0)} \right)} \right]
+$$
+
+ここで、$`\theta`$に依存しない$`x_0, x_T`$を軸に変分下限を分解することを考えると、以下のような式が得られる。
+
+$$
+\begin{align*}
+\theta^{\text{DDPM}}
+ &= \text{argmax}_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ -\sum_{t=2}^T \text{KL} \left( q(x_{t-1}|x_t, x_0) || \hat{p}_\theta(x_{t-1}|x_t) \right) + \ln{\hat{p}_\theta(x_0|x_1)} \right]
+\end{align*}
+$$
+
+右辺の各項に基づいて、誤差$`L_{t-1}`$および$`L_0`$を
+
+$$
+\begin{align*}
+L_{t-1} &= \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \text{KL} \left( q(x_{t-1}|x_t, x_0) || \hat{p}_\theta(x_{t-1}|x_t) \right) \right] \\
+L_0 &= -\mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\hat{p}_\theta(x_0|x_1)} \right]
+\end{align*}
+$$
+
+と定義すると、以下のような解釈ができる：
+- $`L_{t-1}`$を最小化することは、解析的に求められる真の事後分布$`q(x_{t-1}|x_t, x_0)`$と分類器（の一部）$`\hat{p}_\theta(x_{t-1}|x_t)`$の誤差を最小化することに等しい。
+- $`L_0`$を最小化することは、最終的に観測データ$`x_0`$を再構成するステップにおける誤差（再構成誤差と呼ばれる）を最小化することに等しい。
+- 両方を同時に最小化することにより、$`x_T \rightarrow x_{T-1} \rightarrow \cdots \rightarrow x_1 \rightarrow x_0`$の各ステップにおける誤差を最小化することができる。
+
+<details><summary>式変形詳細</summary><div>
 
 まず、マルコフ性に基づいて同時確率分布を分解すると、$`\hat{p}_\theta(x_T)=p(x_T)`$に注意して、
 
@@ -156,33 +162,24 @@ $$
 \end{align*}
 $$
 
-が得られる。最右辺の各項に基づいて、誤差$`L_t`$および$`L_0`$を
+が得られる。
+</div></details>
 
-$$
-\begin{align*}
-L_t &= \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \text{KL} \left( q(x_t|x_{t+1}, x_0) || \hat{p}_\theta(x_t|x_{t+1}) \right) \right] \\
-L_0 &= -\mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\hat{p}_\theta(x_0|x_1)} \right]
-\end{align*}
-$$
+<details><summary>$`L_{t-1}`$には$`q(x_{t-1}|x_t, x_0)`$が含まれているが、なぜ$`p(x_{t-1}|x_t)`$ではないのか？</summary><div>
 
-と定義すると、
+DDPMは$`x_{0:T}`$が一列に順に連なったモデルであるため、生成過程における$`x_{t-1}`$のサンプリングには直前のステップ$`x_T`$が与えられていれば良いのではないかと考えるかもしれない。
+しかし、完全に正規分布に拡散した$`x_T`$から、何らかの意味のある分布に従うデータを生成するプロセスを学ぶためには、「目的地」である$`x_0`$についての情報が不可欠である。
 
-$$
-\begin{align*}
-\theta^{\text{DDPM}}
- &= \text{argmax}_\theta \left( -\sum_{t=2}^T L_{t-1} - L_0 \right) \\
- &= \text{argmin}_\theta \sum_{t=0}^{T-1} L_t \\
-\end{align*}
-$$
+> 例えとして「散歩」を考える。拡散過程は$`x_0`$から出発して、目的地もなくフラフラ彷徨っているだけ、まさにランダムウォークである。
+> 一方で、その帰り道は$`x_0`$を目的地としてどのように進むべきかを考えなければならない。現在地のみを元に歩いても、決して$`x_0`$には帰ってこれないだろう。
 
-と簡略化される。
+</div></details>
 
-$`\theta^{\text{DDPM}}`$が、先で定義した誤差$`L_t`$および$`L_0`$の最小化によって得られることを確認した。
-次に、各誤差について、より詳細に見る。
+### 誤差の詳細
 
-まず$`L_0`$について考える。
-直感的には、$`L_0`$を最小化することは、最終的に観測データ$`x_0`$を再構成するステップにおける誤差（再構成誤差と呼ばれる）を最小化することに等しい。
-また生成過程のモデル定義から、これは単純に正規分布を用いて表現できる。
+誤差$`L_{t-1}`$と$`L_0`$について詳細に見る。
+
+まず$`L_0`$について、これは単純に正規分布を用いて表現できる。
 
 $$
 \begin{align*}
@@ -190,13 +187,35 @@ L_0 &= -\mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\mathcal{N} (x_0; \m
 \end{align*}
 $$
 
-次に$`L_{t-1}`$について考えるため、補題6-1および定理6-1を証明する。
+次に$`L_{t-1}`$について、$`q(x_{t-1}|x_t, x_0)`$は以下のように解析的に得られる（証明は後述）。
 
----
+$$
+\begin{align*}
+q(x_{t-1}|x_t, x_0) &= \mathcal{N}(x_{t-1}; \tilde{\mu}_t(x_t, x_0), \tilde{\beta}_t) \\
+\tilde{\mu}_t(x_t, x_0) &= \frac{\sqrt{\bar{\alpha}_{t-1}} \beta_t}{\bar{\beta}_t} x_0 + \frac{\sqrt{\alpha_t}\bar{\beta}_{t-1}}{\bar{\beta}_t} x_t \\
+\tilde{\beta}_t &= \frac{\bar{\beta}_{t-1}}{\bar{\beta}_t} \beta_t \\
+\end{align*}
+$$
 
-#### 補題 6-1:
+この性質によって、$`L_{t-1}`$は正規分布同士のKLダイバージェンスに帰着する。
+またこの際、生成過程のモデルにおける分散（あるいは分散・共分散行列）$`\sigma_\theta^2(x_t, t)`$を、パラメータに依存しないスカラー$`\sigma_t^2`$で代替すると、結局KLダイバージェンスおよび$`L_{t-1}`$は以下のように表現できる。
 
-確率分布$`p(x)`$および$`p(y|x)`$がそれぞれ
+$$
+\begin{align*}
+\text{KL} \left( q(x_{t-1}|x_t, x_0) || \hat{p}_\theta(x_{t-1}|x_t) \right)
+ &= \text{KL} \left( \mathcal{N}(x_{t-1}; \tilde{\mu}_t(x_t, x_0), \tilde{\beta}_t) || \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \sigma_\theta^2(x_t, t)) \right)\\
+ &= \frac{1}{2} \left[ \ln{\frac{| \sigma_t^2 |}{| \tilde{\beta}_t |}} - d + \text{tr}{\left( {\sigma_\theta^2(x_t, t)}^{-1} \tilde{\beta}_t \right)} + {( \mu_\theta-\tilde{\mu}_t )}^\top \sigma_\theta^2 {( \mu_\theta-\tilde{\mu}_t )} \right] \\
+ &= \frac{1}{2\sigma_t^2} {\left|\left| \mu_\theta-\tilde{\mu}_t \right|\right|}^2 + \text{Const.}\\
+\therefore L_{t-1}
+ &= \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \frac{1}{2\sigma_t^2} {\left|\left| \mu_\theta-\tilde{\mu}_t \right|\right|}^2 \right]
+\end{align*}
+$$
+
+<details><summary>証明</summary><div>
+
+まず以下の補題の証明を行う。
+
+補題：確率分布$`p(x)`$および$`p(y|x)`$がそれぞれ
 
 $$
 \begin{align*}
@@ -215,7 +234,7 @@ p(x|y) &= \mathcal{N}(\tilde{\mu}, \tilde{\sigma}^2) \\
 \end{align*}
 $$
 
-**証明**
+<details><summary>補題の証明</summary><div>
 
 $$
 \begin{align*}
@@ -227,22 +246,9 @@ p(x|y)
 \end{align*}
 $$
 
----
+</div></details>
 
-#### 定理 6-1:
-
-$`q(x_{t-1}|x_t, x_0)`$は以下のように解析的に得られる。
-
-$$
-\begin{align*}
-q(x_{t-1}|x_t, x_0) &= \mathcal{N}(x_{t-1}; \tilde{\mu}_t(x_t, x_0), \tilde{\beta}_t) \\
-\tilde{\mu}_t(x_t, x_0) &= \frac{\sqrt{\bar{\alpha}_{t-1}} \beta_t}{\bar{\beta}_t} x_0 + \frac{\sqrt{\alpha_t}\bar{\beta}_{t-1}}{\bar{\beta}_t} x_t \\
-\tilde{\beta}_t &= \frac{\bar{\beta}_{t-1}}{\bar{\beta}_t} \beta_t \\
-\end{align*}
-$$
-
-**証明**
-
+次に、この補題を用いて本題の証明を行う。
 $`q(x_{t-1}|x_t, x_0)`$について、
 
 $$
@@ -282,21 +288,7 @@ $$
 \end{align*}
 $$
 
----
-
-定理6-1によって、$`L_{t-1}`$は正規分布同士のKLダイバージェンスに帰着する。
-またこの際、生成過程のモデルにおける分散（あるいは分散・共分散行列）$`\sigma_\theta^2(x_t, t)`$を、パラメータに依存しないスカラー$`\sigma_t^2`$で代替すると、結局KLダイバージェンスおよび$`L_{t-1}`$は以下のように表現できる。
-
-$$
-\begin{align*}
-\text{KL} \left( q(x_{t-1}|x_t, x_0) || \hat{p}_\theta(x_{t-1}|x_t) \right)
- &= \text{KL} \left( \mathcal{N}(x_{t-1}; \tilde{\mu}_t(x_t, x_0), \tilde{\beta}_t) || \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \sigma_\theta^2(x_t, t)) \right)\\
- &= \frac{1}{2} \left[ \ln{\frac{| \sigma_t^2 |}{| \tilde{\beta}_t |}} - d + \text{tr}{\left( {\sigma_\theta^2(x_t, t)}^{-1} \tilde{\beta}_t \right)} + {( \mu_\theta-\tilde{\mu}_t )}^\top \sigma_\theta^2 {( \mu_\theta-\tilde{\mu}_t )} \right] \\
- &= \frac{1}{2\sigma_t^2} {\left|\left| \mu_\theta-\tilde{\mu}_t \right|\right|}^2 + \text{Const.}\\
-\therefore L_{t-1}
- &= \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \frac{1}{2\sigma_t^2} {\left|\left| \mu_\theta(x_t, t)-\tilde{\mu}_t(x_t, x_0) \right|\right|}^2 \right]
-\end{align*}
-$$
+</div></details>
 
 #### 平均の詳細
 
