@@ -77,7 +77,13 @@ $$
 \theta^{\text{DDPM}} = \text{argmax}_\theta \mathbb{E}_{x_{1:T} \sim q(x_{1:T}|x_0)} \left[ \ln{\left( \frac{\hat{p}_\theta (x_0, x_{1:T})}{q(x_{1:T}|x_0)} \right)} \right]
 $$
 
-適切な仮定を置けば、上の問題は以下のような最適化問題に帰着する。
+ここで、$`\mu_\theta(x_t, t)`$についての適切な仮定：
+
+$$
+\mu_\theta(x_t, t) = \frac{1}{\sqrt{\alpha_t}} \left( x_t - \frac{\beta_t}{\sqrt{\bar{\beta}_t}} \epsilon_\theta (x_t, t) \right)
+$$
+
+を置けば、上の問題は以下のような最適化問題に帰着する。
 
 $$
 \begin{align*}
@@ -88,6 +94,8 @@ L_t &= \mathbb{E}_{x_0, \epsilon} \left[ \frac{\beta_{t+1}^2}{2\sigma_{t+1}^2\al
 $$
 
 $`\rightarrow`$ 付録6-3: 目的関数の分解
+
+よって、DDPMの学習は以下にまとめられる。
 
 ## 付録
 
@@ -115,6 +123,7 @@ $$
 証明は帰納法を用いると容易である。
 1. $`t=1`$の時、$`\bar{\alpha}_t = \alpha_1`$より明らかに成立する。
 2. $`t=k`$の時題意を満たすと仮定する。$`p(x_{k+1}|x_k)`$から、$`x_{k+1}`$は$`x_k`$とノイズ$`\epsilon`$との和に：
+
     $$
     x_{k+1} = \sqrt{\alpha_{k+1}} x_k + \epsilon, \quad \text{where } \epsilon \sim \mathcal{N}(0, 1-\alpha_{k+1})
     $$
@@ -122,9 +131,10 @@ $$
     $$
     x_{k+1} \sim \mathcal{N}(\sqrt{\bar{\alpha}_{k+1}}x_0, \alpha_{k+1}(1-\bar{\alpha}_k) + 1-\alpha_{k+1}) = \mathcal{N}(\sqrt{\bar{\alpha}_{k+1}}x_0, 1-\bar{\alpha}_{k+1})
     $$
+
     が成立する。
 
-### 6-3 的関数の分解
+### 6-3 目的関数の分解
 
 まず、マルコフ性に基づいて同時確率分布を分解すると、$`\hat{p}_\theta(x_T)=p(x_T)`$に注意して、
 
